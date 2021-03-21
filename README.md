@@ -1,7 +1,7 @@
 # CourseSchedule
 ## Data Folder:
 all_data: dataframe after removing "@" rows and unnecessary columns\
-all_data_full: full dataframe
+all_data_full: full dataframe \
 subject_names: list of all 3-letter subject code
 
 ## What To Do Next
