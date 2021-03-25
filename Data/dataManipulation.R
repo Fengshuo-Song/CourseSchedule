@@ -50,4 +50,4 @@ for(i in 1:nrow(all_new)){
     all_new[i,"has.tba"] = 1
   }
 }
-all_new
+write.csv(all_new,"data_final.csv")
