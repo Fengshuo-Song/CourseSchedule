@@ -84,11 +84,11 @@ get_comb <- function(df_list, total, current, timeList, CRNList){
 
 df = read.csv("data_final.csv")
 # Input text box
-input1 = "STA 142B"
-input2 = "STA 160"
-input3 = "ECS 140A"
-input4 = "ECS 152A"
-input5 = "STA 131A"
+input1 = "ENG 017"
+input2 = "ENG 102"
+input3 = "ENG 104"
+input4 = "PHY 009C"
+input5 = ""
 input6 = ""
 input7 = ""
 input8 = ""
@@ -111,5 +111,23 @@ for(item in input){
   }
 }
 get_comb(df_list,course_num,1,"",c())
-combList
+
+pos = 1
+num_comb = length(combList)%/%course_num
+
+if(num_comb == 0){
+  print("No Combination!")
+} else
+{
+  for(i in 1:num_comb){
+    print(str_glue("========Option {num}========",num = i))
+    for(j in 1:course_num){
+      print(df_list[[j]] %>% filter(CRN == combList[pos]) %>% 
+              select(course_name,Section, format.time))
+      pos = pos + 1
+    }
+    
+  }
+  
+}
 
