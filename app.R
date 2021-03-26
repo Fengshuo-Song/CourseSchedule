@@ -66,18 +66,10 @@ add_time <- function(t1,t2){
 }
 
 combList <<- c()
-numop <<- 1
 get_comb <- function(df_list, total, current, timeList, CRNList){
 
   if(current > total){
     combList <<- append(combList,CRNList)
-    print(str_glue("========Option {num_op}========",num_op = numop))
-    for(j in 1:length(CRNList)){
-      print(df_list[[j]] %>% filter(CRN == CRNList[j]) %>%
-              select(course_name,Section, format.time))
-
-    }
-    numop <<- numop + 1
     return(0)
   }
   curr_df = df_list[[current]]
@@ -88,7 +80,6 @@ get_comb <- function(df_list, total, current, timeList, CRNList){
   }
 }
 
-
 df<-read_csv("data_final.csv")
 ui <- fluidPage(
 
@@ -98,42 +89,42 @@ ui <- fluidPage(
         sidebarPanel(
             textInput(
                 inputId="course1",
-                label="Full Course Name:",
+                label="Full Course Name1:",
                 value=""
             ),
             textInput(
                 inputId="course2",
-                label="Full Course Name:",
+                label="Full Course Name2:",
                 value=""
             ),
             textInput(
                 inputId="course3",
-                label="Full Course Name:",
+                label="Full Course Name3:",
                 value=""
             ),
             textInput(
                 inputId="course4",
-                label="Full Course Name:",
+                label="Full Course Name4:",
                 value=""
             ),
             textInput(
               inputId="course5",
-              label="Full Course Name:",
+              label="Full Course Name5:",
               value=""
             ),
             textInput(
               inputId="course6",
-              label="Full Course Name:",
+              label="Full Course Name6:",
               value=""
             ),
             textInput(
               inputId="course7",
-              label="Full Course Name:",
+              label="Full Course Name7:",
               value=""
             ),
             textInput(
               inputId="course8",
-              label="Full Course Name:",
+              label="Full Course Name8:",
               value=""
             ),
             actionButton("do", "Click Me")
@@ -141,32 +132,52 @@ ui <- fluidPage(
 
         mainPanel(
             textOutput("noclass"),
-            verbatimTextOutput("course_schedual")
+            verbatimTextOutput("course_schedule")
         )
     )
 )
 
 get_data <- function(input_list){
-  numop <<- 1
   df = read.csv("data_final.csv")
   df_list = list()
   course_num = 0
-  for(item in input_list){
-    if(item == ""){
+  for(i in 1:length(input_list)){
+    if(input_list[i] == ""){
       next
     }
-    temp = df %>% filter(course_name == item)
-    if(nrow(temp) == 0){
-      cat(item)
-      cat(" Not Found!\n")
-    }
-    else{
+
+    if(input_list[i] %in% df$course_name){
+      temp = df %>% filter(course_name == input_list[i])
       course_num = course_num + 1
       df_list[[course_num]] = temp
     }
+    else{
+      return(i)
+    }
   }
   get_comb(df_list,course_num,1,"",c())
-  return(df_list)
+
+  tableList = c()
+  pos = 1
+  num_comb = length(combList)%/%course_num
+  if(num_comb == 0){
+    return(123)
+  } else
+  {
+    for(i in 1:num_comb){
+      temp = data.frame(matrix(ncol=3,nrow=0, dimnames=list(NULL, c("course_name", "Section", "format.time"))))
+      for(j in 1:course_num){
+
+        df_temp = df_list[[j]] %>% filter(CRN == combList[pos]) %>% rename(time = all_time,days = all_days) %>%
+          select(CRN,course_name,Section, time, days)
+        temp = rbind(temp,df_temp)
+        pos = pos + 1
+      }
+
+      tableList[[i]] = temp
+    }
+  }
+  return(tableList)
 }
 
 get_comb_list <- function(input_list){
@@ -175,49 +186,33 @@ get_comb_list <- function(input_list){
 }
 
 server <- function(input, output) {
+  inputList <- reactive({
+    c(input$course1,input$course2,input$course3,input$course4,input$course5,input$course6,input$course7,input$course8)
+  })
+
   data1 <- eventReactive(input$do, {
     get_data(c(input$course1,input$course2,input$course3,input$course4,input$course5,input$course6,input$course7,input$course8))
   })
-  # data2 <- eventReactive(input$do, {
-  #   get_comb_list()
-  # })
-  # input1<-reactive(toupper(input$course1))
-  # input2<-reactive(toupper(input$course2))
-  # input3<-reactive(toupper(input$course3))
-  # input4<-reactive(toupper(input$course4))
-  # input5<-reactive(toupper(input$course5))
-  # input6<-reactive(toupper(input$course6))
-  # input7<-reactive(toupper(input$course7))
-  # input8<-reactive(toupper(input$course8))
-  # input = c(input1,input2,input3,input4,input5,input6,input7,input8)
-  # df_list = list()
-  # course_num = 0
-  # output$noclass<-renderText(
-  #   if (input$do == 0){
-  #     return()
-  #   }
-  #   isolate({
-  #     for (i in input){
-  #       temp=df%>%filter(course_name == i)
-  #       if(i == ""){
-  #         next
-  #       }
-  #       if (nrow(temp) == 0){
-  #         cat(i)
-  #         print("NOT FOUND")
-  #       }
-  #     }
-  #   })
-  # )
-  #
-  output$course_schedual<-renderPrint(
-    print(length(data1()))
 
-  )
+  output$course_schedule<-renderPrint({
+    req(!is.numeric(data1()))
+    for(i in 1:length(data1())){
+      print(str_glue("========================Option {num_op}========================",num_op = i))
+      print(data1()[[i]])
+    }
+
+  })
+
+  output$noclass<-renderPrint({
+    req(is.numeric(data1()))
+    if(data1() == 123){
+      cat("Sorry, there is no combination!")
+    }
+    else{
+      cat("Sorry, \"")
+      cat(inputList()[data1()])
+      cat("\" Is Not Found!")
+    }
+  })
 }
 shinyApp(ui = ui, server = server)
-
-
-
-
-
