@@ -1,0 +1,12 @@
+name: CourseSchedule
+title: CourseSchedule
+username:
+account: fengshuosong
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 3870378
+bundleId: 4405279
+url: https://fengshuosong.shinyapps.io/CourseSchedule/
+when: 1616969059.35765
+asMultiple: FALSE
+asStatic: FALSE

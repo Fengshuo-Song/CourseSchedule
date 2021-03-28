@@ -102,6 +102,9 @@ check_preferred <- function(tList, mint, maxt)
   if(mint == 6 && maxt == 24) {
     return(TRUE)
   }
+  if(tList == "TBA" || tList == "") {
+    return(TRUE)
+  }
   time_list = str_split(tList,"#")[[1]]
   for(item in time_list) {
     str_list = (item %>% str_replace(" - ","@") %>% str_replace_all(" ","@") %>%
@@ -181,8 +184,6 @@ ui <- fluidPage(
           actionButton("do", "Click Me")
 
         ),
-
-
         mainPanel(
           textOutput("noclass"),
           verbatimTextOutput("course_schedule")
