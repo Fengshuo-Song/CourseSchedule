@@ -5,8 +5,8 @@ account: fengshuosong
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 3870378
-bundleId: 4405279
+bundleId: 4405865
 url: https://fengshuosong.shinyapps.io/CourseSchedule/
-when: 1616969059.35765
+when: 1616985866.13878
 asMultiple: FALSE
 asStatic: FALSE

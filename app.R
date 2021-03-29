@@ -282,10 +282,14 @@ server <- function(input, output) {
     }
   })
   output$intro <- renderUI({
-    HTML(paste("First, type in your courses' names.(For example: STA 141C)", "Second, adjust the slider bar to your preferred time period for classes.", "Third, click the buttom.", sep = "<br/>"))
+    HTML(paste("1. Type in your courses' names.(i.e.: STA 141C)",
+               "2. Adjust the slider to choose your preferred time period.",
+               "3. Click the button.", sep = "<br/>"))
   })
   output$read <- renderUI({
-    HTML(paste("How to read the output:", "The possible schedules are seperated by '=====Option {}====='.", "The preferred schedules are seperated by '>>>>>Option {}<<<<<'.", sep = "<br/>"))
+    HTML(paste("How to read the output:",
+               "Non-preferred schedules are seperated by '=====Option {}====='.",
+               "Preferred schedules are seperated by '>>>>>Option {}<<<<<'.", sep = "<br/>"))
   })
 }
 shinyApp(ui = ui, server = server)
