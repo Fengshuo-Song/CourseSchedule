@@ -189,7 +189,8 @@ ui <- fluidPage(
     tabPanel(
       title = "Instructions",
       htmlOutput("intro"),
-      htmlOutput("read")
+      htmlOutput("read"),
+      htmlOutput("end")
     )
   )
 )
@@ -284,12 +285,18 @@ server <- function(input, output) {
   output$intro <- renderUI({
     HTML(paste("1. Type in your courses' names.(i.e.: STA 141C)",
                "2. Adjust the slider to choose your preferred time period.",
-               "3. Click the button.", sep = "<br/>"))
+               "3. Click the button.",
+               "<br>", sep = "<br/>"))
   })
   output$read <- renderUI({
     HTML(paste("How to read the output:",
                "Non-preferred schedules are seperated by '=====Option {}====='.",
-               "Preferred schedules are seperated by '>>>>>Option {}<<<<<'.", sep = "<br/>"))
+               "Preferred schedules are seperated by '>>>>>Option {}<<<<<'.",
+               "<br>",sep = "<br/>"))
+  })
+  output$end <- renderUI({
+    HTML(paste("If you have more questions or want to give any feedbacks, feel free to email us by fssong@ucdavis.edu or yhzheng@ucdavis.edu."
+               ,sep = "<br/>"))
   })
 }
 shinyApp(ui = ui, server = server)
